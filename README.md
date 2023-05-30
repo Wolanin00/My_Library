@@ -1,5 +1,5 @@
 # Mathew's Library 📚
-Technologies: Python, HTML, CSS, Flask, MySQL(SQLite)
+Technologies: Python, HTML, Flask, MySQL(SQLite)
 # Getting Started
 <h3>Live: https://mathew-library.onrender.com/  </h3>
 
