@@ -52,7 +52,9 @@ def edit():
         book_id = request.form["id"]
         book_to_update = Book.query.get(book_id)
         new_rating = request.form["rating"]
-        if not new_rating.isdigit():
+        try:
+            float(new_rating)
+        except ValueError:
             flash('Rating should be float')
             return render_template("edit.html", book=book_to_update)
         book_to_update.rating = request.form["rating"]

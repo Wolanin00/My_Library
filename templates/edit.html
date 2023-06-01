@@ -3,8 +3,8 @@
 <div class="container">
     <h1 class="text-center p-3">Edit rating</h1>
     <form action="{{ url_for('edit') }}" method="POST">
-        <h3><b>Book Name:</b> {{book.title}}</h3><br>
-        <h4>Current Rating: {{book.rating}}</h4>
+        <h3><b>Book Name:</b> {{ book.title }}</h3><br>
+        <h4>Current Rating: {{ book.rating|round(1) }}</h4>
         <input hidden="hidden" name="id" value="{{book.id}}">
         <div class="input-group mt-5">
             <input class="form-control" name="rating" type="text" placeholder="New Rating" required>
