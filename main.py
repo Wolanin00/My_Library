@@ -24,7 +24,7 @@ with app.app_context():
 
 @app.route('/')
 def home():
-    all_books = db.session.query(Book).all()
+    all_books = db.session.query(Book).order_by(Book.rating.desc()).all()
     return render_template('index.html', book_stack=all_books)
 
 
