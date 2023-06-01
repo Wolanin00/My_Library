@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+import math
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///mybooks.db"
@@ -34,9 +35,16 @@ def add():
         b_name = request.form["book"]
         b_author = request.form["author"]
         b_rating = request.form["rating"]
-        if not b_rating.isdigit():
+        try:
+            float_rating = float(b_rating)
+        except ValueError:
             flash('Rating should be float')
             return render_template('add.html', name=b_name, author=b_author)
+        else:
+            if float_rating < 0 or float_rating > 10:
+                flash('Rating should be in range 0-10')
+                return render_template('add.html', name=b_name, author=b_author)
+        b_rating = math.floor(float_rating * 10) / 10
         new_book = Book(title=b_name, author=b_author, rating=b_rating)
         db.session.add(new_book)
         db.session.commit()
@@ -52,10 +60,16 @@ def edit():
         book_id = request.form["id"]
         book_to_update = Book.query.get(book_id)
         new_rating = request.form["rating"]
-        if not new_rating.isdigit():
+        try:
+            float_rating = float(new_rating)
+        except ValueError:
             flash('Rating should be float')
             return render_template("edit.html", book=book_to_update)
-        book_to_update.rating = request.form["rating"]
+        else:
+            if float_rating < 0 or float_rating > 10:
+                flash('Rating should be in range 0-10')
+                return render_template("edit.html", book=book_to_update)
+        book_to_update.rating = math.floor(float_rating * 10) / 10
         db.session.commit()
         return redirect(url_for('home'))
     return render_template("edit.html", book=book_selected)

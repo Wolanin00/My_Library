@@ -11,7 +11,8 @@
             <th scope="col" class="col-1">Book id</th>
             <th scope="col" class="col-3">Title</th>
             <th scope="col" class="col-3">Author</th>
-            <th scope="col" class="col-3">Rating</th>
+            <th scope="col" class="col-2">Rating [0-10]</th>
+            <th scope="col" class="col-1">URL</th>
             <th scope="col" class="col-1">Edit</th>
             <th scope="col" class="col-1">Delete</th>
         </tr>
@@ -23,7 +24,9 @@
             <th scope="row">{{ loop.index }}</th>
             <td>{{ book.title }}</td>
             <td>{{ book.author }}</td>
-            <td>{{ book.rating }}</td>
+            <td>{{ book.rating|round(1) }}</td>
+            <td><a href="https://www.google.com/search?q={{ book.title }} {{ book.author }}" target=”_blank”
+                   class="link-light">URL</a></td>
             <td><a href="{{ url_for('edit', id=book.id) }}" class="link-light">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen"
                      viewBox="0 0 16 16">
