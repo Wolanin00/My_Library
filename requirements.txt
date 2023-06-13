@@ -2,12 +2,4 @@ Flask
 pip==23.1.2
 flask_sqlalchemy
 gunicorn
-Werkzeug
-six
-click
-colorama
-Flask-Cors
-itsdangerous
-Jinja2
-MarkupSafe
-python-dotenv
+
