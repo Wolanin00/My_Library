@@ -1,3 +1,0 @@
-pip==23.1.2
-flask_sqlalchemy
-gunicorn
