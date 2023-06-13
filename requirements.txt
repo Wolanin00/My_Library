@@ -1,4 +1,4 @@
-flask==1.1.4
+flask
 pip==23.1.2
 flask_sqlalchemy
 gunicorn
