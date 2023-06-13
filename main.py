@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+import math
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///mybooks.db"
+app.config['SECRET_KEY'] = 'my_secret_key'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -23,7 +25,7 @@ with app.app_context():
 
 @app.route('/')
 def home():
-    all_books = db.session.query(Book).all()
+    all_books = db.session.query(Book).order_by(Book.rating.desc()).all()
     return render_template('index.html', book_stack=all_books)
 
 
@@ -33,24 +35,43 @@ def add():
         b_name = request.form["book"]
         b_author = request.form["author"]
         b_rating = request.form["rating"]
+        try:
+            float_rating = float(b_rating)
+        except ValueError:
+            flash('Rating should be float')
+            return render_template('add.html', name=b_name, author=b_author)
+        else:
+            if float_rating < 0 or float_rating > 10:
+                flash('Rating should be in range 0-10')
+                return render_template('add.html', name=b_name, author=b_author)
+        b_rating = math.floor(float_rating * 10) / 10
         new_book = Book(title=b_name, author=b_author, rating=b_rating)
         db.session.add(new_book)
         db.session.commit()
         return redirect(url_for('home'))
-    return render_template('add.html')
+    return render_template('add.html', name='', author='')
 
 
 @app.route("/edit", methods=["GET", "POST"])
 def edit():
-    if request.method == "POST":
-        #UPDATE RECORD
-        book_id = request.form["id"]
-        book_to_update = Book.query.get(book_id)
-        book_to_update.rating = request.form["rating"]
-        db.session.commit()
-        return redirect(url_for('home'))
     book_id = request.args.get('id')
     book_selected = Book.query.get(book_id)
+    if request.method == "POST":
+        book_id = request.form["id"]
+        book_to_update = Book.query.get(book_id)
+        new_rating = request.form["rating"]
+        try:
+            float_rating = float(new_rating)
+        except ValueError:
+            flash('Rating should be float')
+            return render_template("edit.html", book=book_to_update)
+        else:
+            if float_rating < 0 or float_rating > 10:
+                flash('Rating should be in range 0-10')
+                return render_template("edit.html", book=book_to_update)
+        book_to_update.rating = math.floor(float_rating * 10) / 10
+        db.session.commit()
+        return redirect(url_for('home'))
     return render_template("edit.html", book=book_selected)
 
 
